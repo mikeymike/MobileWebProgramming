@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flikr App</title>
+    <link rel="stylesheet" href="app.css"/>
+    <script type="text/javascript" src="icanhaz.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+
+    <script id="card" type="text/html">
+        <div class="card">
+            <figure>
+                <figcaption>{{{ img.caption }}}</figcaption>
+                <img class="card-image" src="{{ img.href }}" alt="{{ img.alt }}">
+            </figure>
+            <button class="btn fav">Favourite!</button>
+        </div>
+    </script>
+
+</head>
+<body>
+    <header role="banner">
+
+    </header>
+
+    <main role="main">
+        <div id="photos">
+
+        </div>
+    </main>
+
+    <footer role="complementary">
+
+    </footer>
+</body>
+</html>
