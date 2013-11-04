@@ -5,7 +5,8 @@ var app = {
     key: "f4bff7377524874c7c2585ea14ed8639",
     apiURL: "http://api.flickr.com/services/rest/",
     lock: false, // Set to true when JSONP call is started, false on completion
-    photoContainer: null, // Should to be set in init callback function
+    photoContainer: null, // Should to be set in init callback function,
+    offline: false, // Set to false by default will be true if user is offline
 
     data: {
         jsonpElements: [],
@@ -137,16 +138,23 @@ var app = {
      * @param callback App logic function
      */
     init: function(callback){
-        if(!("coords" in this)){
-            if(this.helpers.hasGeo()){
-                this.coords = navigator.geolocation.getCurrentPosition(function(pos){
-                    // Success so save it
-                    app.coords = pos.coords;
-                    callback();
-                }, function(err){
-                    //TODO: error logic
-                })
-            } //TODO: Cry about not having GeoLocation !!!
+        app.photoContainer = document.getElementById("photos");
+        if(navigator.onLine){
+            if(!("coords" in this)){
+                if(this.helpers.hasGeo()){
+                    this.coords = navigator.geolocation.getCurrentPosition(function(pos){
+                        // Success so save it
+                        app.coords = pos.coords;
+                        callback();
+                    }, function(err){
+                        //TODO: error logic
+                    })
+                } //TODO: Cry about not having GeoLocation !!!
+            }
+        } else {
+            // Offline App
+            app.offline = true;
+            app.showOffline();
         }
     },
 
@@ -287,7 +295,7 @@ var app = {
      * FIXME: Seem to be getting multiple calls to showNextPage on a quick scroll
      */
     handleScroll: function(){
-        if(!app.data.pagesEnd){
+        if(!app.offline && !app.data.pagesEnd){
             var now = new Date().getTime();
             if(!this.hasOwnProperty("lastScroll") || (!app.lock  && !app.data.pagesEnd && now - this.lastScroll > 150)){
                 var percentScrolled = app.client.getPercentageScrolled();
@@ -473,8 +481,6 @@ function jsonFlickrApi(res){
 
 document.addEventListener('DOMContentLoaded', function(){
     app.init(function(){
-        app.photoContainer = document.getElementById("photos");
-
         app.helpers.setOptions({
             lat: app.coords.latitude, //29.951066, //
             lon: app.coords.longitude, //-90.071532, //

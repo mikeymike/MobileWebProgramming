@@ -1,0 +1,12 @@
+CACHE MANIFEST
+# v1.0.1
+
+CACHE:
+app.css
+app.js
+icanhaz.js
+
+NETWORK:
+*
+http://*
+https://*
